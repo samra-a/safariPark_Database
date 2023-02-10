@@ -3,6 +3,9 @@ DROP TABLE IF EXISTS staff;
 DROP TABLE IF EXISTS animals;
 DROP TABLE IF EXISTS enclosures;
 
+-- one enclosure contains many animals because animals references enclosures 
+-- MANY TO MANY
+    -- each row in the join tabel point to one elcosure and one staff
 
 CREATE TABLE enclosures (
     id SERIAL PRIMARY KEY,
@@ -77,10 +80,10 @@ WHERE enclosures.closedformaintenance = true;
 
 SELECT enclosures.name, animals.name, animals.age FROM animals 
 INNER JOIN enclosures ON enclosures.id = animals.enclosure_id
-ORDER BY animals.age DESC LIMIT 1;
+ORDER BY animals.age DESC, animals.name LIMIT 1;
 
 --The number of different animal types a given keeper has been assigned to work with.
-
+    --option 1:
 SELECT staff.name, COUNT(DISTINCT animals.type) FROM staff
 INNER JOIN assignments 
 ON staff.id = employeeId
@@ -89,6 +92,12 @@ ON enclosures.id = assignments.enclosureID
 INNER JOIN animals 
 ON enclosures.id = animals.enclosure_id 
 GROUP BY staff.name;
+
+    --option 2
+SELECT * FROM animals 
+INNER JOIN assignments 
+ON animals.enclosure_id = assignments.enclosure_id
+WHERE assignments.EMPLOYEE_ID = 1;
 
 --The number of different keepers who have been assigned to work in a given enclosure
 
